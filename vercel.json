@@ -12,24 +12,8 @@
     ],
     "routes": [
         {
-            "src": "/build/(.*)",
-            "dest": "/public/build/$1"
-        },
-        {
-            "src": "/images/(.*)",
-            "dest": "/public/images/$1"
-        },
-        {
-            "src": "/videos/(.*)",
-            "dest": "/public/videos/$1"
-        },
-        {
-            "src": "/css/(.*)",
-            "dest": "/public/css/$1"
-        },
-        {
-            "src": "/js/(.*)",
-            "dest": "/public/js/$1"
+            "src": "/(.*\\.(?:css|js|svg|png|jpg|jpeg|gif|ico|mp4|srt|webmanifest|txt|html))$",
+            "dest": "/public/$1"
         },
         {
             "src": "/(.*)",
