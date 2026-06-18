@@ -10,5 +10,9 @@ $_SERVER['SESSION_DRIVER'] = 'cookie';
 $_SERVER['CACHE_PREFIX'] = 'vercel_';
 $_SERVER['APP_DEBUG'] = 'true';
 $_SERVER['LOG_CHANNEL'] = 'stderr';
+putenv('APP_DEBUG=true');
+putenv('LOG_CHANNEL=stderr');
+putenv('VIEW_COMPILED_PATH=/tmp');
+putenv('SESSION_DRIVER=cookie');
 
 require __DIR__ . '/../public/index.php';
