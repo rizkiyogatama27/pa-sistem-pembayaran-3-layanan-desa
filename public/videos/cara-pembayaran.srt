@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:08,000
+Halo, saya [Nama]. Di video singkat ini saya tunjukkan cara membayar tagihan menggunakan website Layanan Pembayaran Desa.
+
+2
+00:00:08,000 --> 00:00:22,000
+Pertama, masuk ke akun Anda dengan email dan password terdaftar. Klik 'Masuk'.
+
+3
+00:00:22,000 --> 00:00:36,000
+Setelah masuk, pilih menu 'Tagihan Saya' untuk melihat daftar tagihan aktif.
+
+4
+00:00:36,000 --> 00:00:58,000
+Pilih tagihan yang ingin dibayar, lalu klik tombol 'Bayar'. Sistem akan mengarahkan Anda ke halaman pembayaran.
+
+5
+00:00:58,000 --> 00:01:10,000
+Jika diarahkan ke Pakasir, ikuti instruksi, scan QRIS atau pilih metode pembayaran. Catatan: tombol 'Saya Sudah Transfer' adalah bagian dari halaman Pakasir.
+
+6
+00:01:10,000 --> 00:01:20,000
+Setelah pembayaran berhasil, kembali ke aplikasi dan lihat status tagihan berubah menjadi 'Lunas'.
+
+7
+00:01:20,000 --> 00:01:30,000
+Jika butuh bantuan, hubungi admin di footer. Terima kasih — selamat mencoba.
