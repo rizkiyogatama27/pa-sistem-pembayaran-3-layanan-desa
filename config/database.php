@@ -63,6 +63,22 @@ return [
             ]) : [],
         ],
 
+        'tidb' => [
+            'driver' => 'mysql',
+            'host' => env('TIDB_HOST', '127.0.0.1'),
+            'port' => env('TIDB_PORT', '4000'),
+            'database' => env('TIDB_DATABASE', 'test'),
+            'username' => env('TIDB_USERNAME', 'root'),
+            'password' => env('TIDB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => base_path('cacert.pem'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
