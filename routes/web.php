@@ -110,12 +110,16 @@ Route::get('/event-donasi/{eventDonasi}/kontribusi-public', [UserEventDonasiCont
 use App\Models\EventDonasi;
 
 Route::get('/', function () {
-    $activeEvents = EventDonasi::query()
-        ->withSum('kontribusis as total_terkumpul', 'nominal')
-        ->where('status', 'aktif')
-        ->orderByDesc('id')
-        ->limit(3)
-        ->get();
+    try {
+        $activeEvents = EventDonasi::query()
+            ->withSum('kontribusis as total_terkumpul', 'nominal')
+            ->where('status', 'aktif')
+            ->orderByDesc('id')
+            ->limit(3)
+            ->get();
+    } catch (\Exception $e) {
+        $activeEvents = collect([]); // Jika database error (misal di Vercel), kembalikan data kosong
+    }
 
     return view('welcome', compact('activeEvents'));
 });
