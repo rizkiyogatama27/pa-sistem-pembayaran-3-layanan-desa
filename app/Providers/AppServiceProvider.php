@@ -25,9 +25,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $host = request()->getHost();
 
-        // Ngrok serves pages over HTTPS and forwards to local HTTP.
-        // Force HTTPS URL generation to avoid mixed-content blocked CSS/JS on mobile.
-        if (Str::contains($host, 'ngrok-free.dev') || Str::contains($host, 'ngrok.app')) {
+        // Ngrok and Vercel serve pages over HTTPS and forward to local HTTP.
+        // Force HTTPS URL generation to avoid mixed-content blocked CSS/JS and insecure form submission warnings.
+        if (app()->environment('production') || Str::contains($host, 'ngrok-free.dev') || Str::contains($host, 'ngrok.app') || Str::contains($host, 'vercel.app')) {
             URL::forceScheme('https');
         }
 
