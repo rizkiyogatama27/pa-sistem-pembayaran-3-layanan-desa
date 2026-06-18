@@ -8,5 +8,7 @@ $_SERVER['APP_SERVICES_CACHE'] = '/tmp/services.php';
 $_SERVER['VIEW_COMPILED_PATH'] = '/tmp';
 $_SERVER['SESSION_DRIVER'] = 'cookie';
 $_SERVER['CACHE_PREFIX'] = 'vercel_';
+$_SERVER['APP_DEBUG'] = 'true';
+$_SERVER['LOG_CHANNEL'] = 'stderr';
 
 require __DIR__ . '/../public/index.php';
