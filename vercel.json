@@ -16,12 +16,7 @@
     ],
     "routes": [
         {
-            "src": "/storage/(.*\\.(?:css|js|svg|png|jpg|jpeg|gif|ico|mp4|srt|webmanifest|txt|html))$",
-            "dest": "/storage/app/public/$1"
-        },
-        {
-            "src": "/(.*\\.(?:css|js|svg|png|jpg|jpeg|gif|ico|mp4|srt|webmanifest|txt|html))$",
-            "dest": "/public/$1"
+            "handle": "filesystem"
         },
         {
             "src": "/(.*)",
