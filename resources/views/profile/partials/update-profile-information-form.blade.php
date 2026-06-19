@@ -49,6 +49,13 @@
             <x-input-error class="mt-2" :messages="$errors->get('kk')" />
         </div>
 
+        <div>
+            <x-input-label for="no_hp" :value="__('Nomor WhatsApp (Aktif)')" />
+            <x-text-input id="no_hp" name="no_hp" type="text" class="mt-1 block w-full rounded-xl border-slate-300 focus:border-sky-500 focus:ring-sky-500" :value="old('no_hp', $user->warga->no_hp ?? '')" placeholder="Contoh: 081234567890" />
+            <x-input-error class="mt-2" :messages="$errors->get('no_hp')" />
+            <p class="mt-1 text-sm text-slate-500">Nomor ini digunakan untuk mengirimkan notifikasi pembayaran via WhatsApp.</p>
+        </div>
+
         <div class="flex items-center gap-4 pt-2">
             <x-primary-button>{{ __('Simpan') }}</x-primary-button>
 

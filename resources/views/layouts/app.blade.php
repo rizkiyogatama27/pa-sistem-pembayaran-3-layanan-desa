@@ -39,7 +39,7 @@
                     @include('layouts.user-sidebar')
                 @endif
             @endif
-            <div @if(Auth::check() && in_array(Auth::user()->role, ['admin', 'user', 'warga'])) style="margin-left: 256px;" @endif>
+            <div @if(Auth::check() && in_array(Auth::user()->role, ['admin', 'user', 'warga'])) class="lg:ml-64 transition-all duration-300" @endif>
                 @include('layouts.navigation')
 
                 <!-- Page Heading -->

@@ -1,4 +1,4 @@
-<aside class="admin-sidebar flex flex-col fixed top-0 left-0 h-screen w-64 z-30">
+<aside class="admin-sidebar hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 z-30">
     <div class="sidebar-brand">
         <div style="background: linear-gradient(135deg, #1c57ad, #178f77); padding: 7px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(28, 87, 173, 0.3);">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" style="width: 20px; height: 20px;">
