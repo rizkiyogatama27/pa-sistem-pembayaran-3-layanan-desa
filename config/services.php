@@ -37,10 +37,12 @@ return [
     ],
 
     'whatsapp' => [
+        'provider' => env('WHATSAPP_PROVIDER', 'fonnte'),
         'enabled' => env('WHATSAPP_ENABLED', false),
         'token' => env('WHATSAPP_TOKEN'),
         'endpoint' => env('WHATSAPP_ENDPOINT', 'https://api.fonnte.com/send'),
         'country_code' => env('WHATSAPP_COUNTRY_CODE', '62'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
     ],
 
     'twilio' => [
