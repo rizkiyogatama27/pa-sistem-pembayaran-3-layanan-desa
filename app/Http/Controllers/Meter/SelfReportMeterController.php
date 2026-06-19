@@ -45,10 +45,35 @@ class SelfReportMeterController extends Controller
 
         $pembayaran = Pembayaran::findOrFail($request->input('pembayaran_id'));
 
-        // save photo
-        $path = $request->file('meter_photo')->store('meter_photos');
-        $absolute = Storage::path($path);
+        $photoFile = $request->file('meter_photo');
+        $absolute = $photoFile->getRealPath();
         $photoHash = hash_file('sha256', $absolute);
+
+        // Karena Vercel (Serverless) bersifat Read-Only untuk Storage lokal, 
+        // kita menggunakan layanan Catbox.moe untuk menyimpan gambar meteran secara permanen dan gratis.
+        $path = null;
+        try {
+            $response = \Illuminate\Support\Facades\Http::attach(
+                'fileToUpload',
+                file_get_contents($absolute),
+                $photoFile->getClientOriginalName()
+            )->post('https://catbox.moe/user/api.php', [
+                'reqtype' => 'fileupload'
+            ]);
+
+            if ($response->successful()) {
+                $path = trim($response->body());
+            } else {
+                \Log::error('Catbox upload failed: ' . $response->status());
+            }
+        } catch (\Exception $e) {
+            \Log::error('Catbox upload error: ' . $e->getMessage());
+        }
+
+        // Fallback jika gagal upload ke catbox, setidaknya simpan nama aslinya (meski tidak akan bisa diload gambarnya nanti)
+        if (! $path || ! str_starts_with($path, 'http')) {
+            $path = 'failed_upload_' . time() . '.jpg';
+        }
 
         // try extract EXIF
         $lat = null; $lng = null;
@@ -170,12 +195,10 @@ class SelfReportMeterController extends Controller
             'meter_photo' => 'required|image|max:10240',
         ]);
 
-        $path = $request->file('meter_photo')->store('meter_photos_temp');
-        $absolute = Storage::path($path);
+        $photoFile = $request->file('meter_photo');
+        $absolute = $photoFile->getRealPath();
         
         $ocr = $ocrService->read($absolute);
-        
-        @unlink($absolute);
 
         return response()->json($ocr);
     }

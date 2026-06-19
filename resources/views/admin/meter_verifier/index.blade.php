@@ -114,8 +114,8 @@
                             </td>
                             <td>
                                 @if($r->meter_photo)
-                                    <a href="{{ asset('storage/' . $r->meter_photo) }}" target="_blank" title="Klik untuk perbesar">
-                                        <img src="{{ asset('storage/' . $r->meter_photo) }}" class="photo-thumb" alt="Foto Meter" />
+                                    <a href="{{ str_starts_with($r->meter_photo, 'http') ? $r->meter_photo : asset('storage/' . $r->meter_photo) }}" target="_blank" title="Klik untuk perbesar">
+                                        <img src="{{ str_starts_with($r->meter_photo, 'http') ? $r->meter_photo : asset('storage/' . $r->meter_photo) }}" class="photo-thumb" alt="Foto Meter" />
                                     </a>
                                 @else
                                     <span style="color:#94a3b8;font-size:12px;">Tidak ada</span>
