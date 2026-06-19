@@ -117,12 +117,12 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <input type="hidden" name="status" value="{{ $pembayaran->status }}">
-                <div class="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                    {{ $pembayaran->status === 'paid' ? 'Lunas' : 'Pending / Draft' }}
-                </div>
-                <p class="mt-1 text-xs text-gray-500">Status dikunci. Ubah status hanya lewat proses bayar online atau tunai.</p>
+                <label class="field-label">Status</label>
+                <select name="status" class="field-input">
+                    <option value="pending" {{ $pembayaran->status === 'pending' ? 'selected' : '' }}>Pending / Draft</option>
+                    <option value="paid" {{ $pembayaran->status === 'paid' ? 'selected' : '' }}>Lunas (Termasuk Pembayaran Tunai)</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500">Untuk pembayaran tunai, ubah status menjadi Lunas dan simpan perubahan.</p>
             </div>
 
             <div>
