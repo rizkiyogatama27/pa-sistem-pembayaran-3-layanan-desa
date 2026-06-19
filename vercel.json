@@ -17,11 +17,17 @@
     "routes": [
         {
             "src": "/storage/(.*\\.(?:css|js|svg|png|jpg|jpeg|gif|ico|mp4|srt|webmanifest|txt|html))$",
-            "dest": "/storage/app/public/$1"
+            "dest": "/storage/app/public/$1",
+            "headers": {
+                "cache-control": "public, max-age=31536000, immutable"
+            }
         },
         {
             "src": "/(.*\\.(?:css|js|svg|png|jpg|jpeg|gif|ico|mp4|srt|webmanifest|txt|html))$",
-            "dest": "/public/$1"
+            "dest": "/public/$1",
+            "headers": {
+                "cache-control": "public, max-age=31536000, immutable"
+            }
         },
         {
             "src": "/(.*)",
