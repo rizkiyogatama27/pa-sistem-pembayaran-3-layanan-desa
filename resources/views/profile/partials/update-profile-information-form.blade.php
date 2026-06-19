@@ -56,6 +56,12 @@
             <p class="mt-1 text-sm text-slate-500">Nomor ini digunakan untuk mengirimkan notifikasi pembayaran via WhatsApp.</p>
         </div>
 
+        <div>
+            <x-input-label for="alamat" :value="__('Alamat Lengkap')" />
+            <textarea id="alamat" name="alamat" class="mt-1 block w-full rounded-xl border-slate-300 focus:border-sky-500 focus:ring-sky-500 shadow-sm" rows="3" placeholder="Masukkan alamat lengkap rumah Anda">{{ old('alamat', $user->warga->alamat ?? '') }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('alamat')" />
+        </div>
+
         <div class="flex items-center gap-4 pt-2">
             <x-primary-button>{{ __('Simpan') }}</x-primary-button>
 

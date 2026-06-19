@@ -29,6 +29,7 @@ class ProfileUpdateRequest extends FormRequest
             'nik' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
             'kk' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
             'no_hp' => ['nullable', 'string', 'max:20'],
+            'alamat' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

@@ -35,8 +35,18 @@ class ProfileController extends Controller
 
         $user->save();
 
-        if ($user->warga_id && $request->filled('no_hp')) {
-            $user->warga()->update(['no_hp' => $request->input('no_hp')]);
+        if ($user->warga_id) {
+            $updateData = [];
+            if ($request->has('no_hp')) {
+                $updateData['no_hp'] = $request->input('no_hp');
+            }
+            if ($request->has('alamat')) {
+                $updateData['alamat'] = $request->input('alamat');
+            }
+            
+            if (!empty($updateData)) {
+                $user->warga()->update($updateData);
+            }
         }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
