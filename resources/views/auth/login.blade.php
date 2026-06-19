@@ -84,7 +84,7 @@
 
         @media (max-width: 1024px) {
             .page { grid-template-columns: 1fr; }
-            body { overflow: auto; }
+            html, body { overflow: auto; min-height: auto; }
             .left { padding: 60px 24px 80px; text-align: center; align-items: center; justify-content: center; }
             .feature-item { text-align: left; }
             .right { padding: 40px 24px; border-top-left-radius: 30px; border-top-right-radius: 30px; margin-top: -30px; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); justify-content: center; align-items: center; }
