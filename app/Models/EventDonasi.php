@@ -39,13 +39,13 @@ class EventDonasi extends Model
         $coverImage = $this->attributes['cover_image_url'] ?? null;
 
         if (!empty($coverImage)) {
-            return asset('images/event-covers/' . ltrim($coverImage, '/'));
+            return asset('storage/event-covers/' . ltrim($coverImage, '/'));
         }
 
         $legacyCoverImage = $this->attributes['cover_image'] ?? null;
 
         if (!empty($legacyCoverImage)) {
-            return asset('images/event-covers/' . ltrim($legacyCoverImage, '/'));
+            return asset('storage/event-covers/' . ltrim($legacyCoverImage, '/'));
         }
 
         return null;
