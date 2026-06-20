@@ -50,6 +50,35 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/pembayaran/reminder-whatsapp/all', [PembayaranController::class, 'sendWhatsappReminderAll'])->name('pembayaran.reminder-whatsapp.all');
     // alias for compatibility with older view named route
     Route::post('/pembayaran/reminder-whatsapp/bulk', [PembayaranController::class, 'sendWhatsappReminderAll'])->name('pembayaran.reminder-whatsapp.bulk');
+    // Route debug: test kirim WA langsung (hanya admin)
+    Route::get('/debug/wa-test', function (\App\Services\WhatsAppService $wa) {
+        $token    = config('services.whatsapp.token');
+        $endpoint = config('services.whatsapp.endpoint');
+        $provider = config('services.whatsapp.provider');
+        $enabled  = config('services.whatsapp.enabled');
+        $target   = request('to', '6285230236462');
+        $result   = null;
+
+        if (request()->has('send')) {
+            $result = $wa->send($target, 'TEST dari Portal Desa 🎉 Jika pesan ini masuk, notif WA sudah berfungsi!');
+            $lastResponse = $wa->getLastResponse();
+        }
+
+        return response()->json([
+            'config' => [
+                'provider' => $provider,
+                'enabled'  => $enabled,
+                'endpoint' => $endpoint,
+                'token_length' => strlen((string) $token),
+                'token_preview' => $token ? substr($token, 0, 8) . '...' : null,
+            ],
+            'test' => request()->has('send') ? [
+                'target'   => $target,
+                'sent'     => $result,
+                'response' => $lastResponse ?? null,
+            ] : 'Tambahkan ?send=1&to=628xxx ke URL ini untuk mengirim test WA',
+        ]);
+    })->name('debug.wa-test');
     Route::get('/pembayaran/{id}/invoice', [PembayaranController::class, 'invoice'])->name('pembayaran.invoice');
     Route::get('/rekap/warga', [RekapController::class, 'perWarga'])->name('rekap.warga');
     Route::get('/rekap/warga/export-csv', [RekapController::class, 'exportWargaCsv'])->name('rekap.warga.csv');
