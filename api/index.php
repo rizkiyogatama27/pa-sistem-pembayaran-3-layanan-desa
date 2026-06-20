@@ -1,8 +1,13 @@
 <?php
 // Forward Vercel requests to normal index.php
-// Cache-busting: setiap kali file ini diubah, cache lama di /tmp otomatis tidak dipakai
+// Cache-busting: setiap deploy baru otomatis pakai folder /tmp yang berbeda
 $_cacheVersion = md5(filemtime(__FILE__));
 $_tmpDir = '/tmp/v_' . $_cacheVersion;
+
+// Pastikan direktori cache sudah ada sebelum Laravel mencoba menulis ke dalamnya
+if (!is_dir($_tmpDir)) {
+    mkdir($_tmpDir, 0777, true);
+}
 
 $_SERVER['APP_CONFIG_CACHE']   = $_tmpDir . '/config.php';
 $_SERVER['APP_EVENTS_CACHE']   = $_tmpDir . '/events.php';
