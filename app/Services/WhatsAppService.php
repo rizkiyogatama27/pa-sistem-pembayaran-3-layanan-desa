@@ -110,6 +110,46 @@ class WhatsAppService
             return true;
         }
 
+        // Device-based providers: Wablas or Fonnte
+        $provider = (string) config('services.whatsapp.provider', 'fonnte');
+
+        if ($provider === 'wablas') {
+            // Wablas API format: phone + message in JSON body, token in header
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => (string) config('services.whatsapp.token'),
+                    'Content-Type'  => 'application/json',
+                ])->post((string) config('services.whatsapp.endpoint'), [
+                    'phone'   => $target,
+                    'message' => $message,
+                ]);
+
+                $this->lastResponse = [
+                    'http_status' => $response->status(),
+                    'body'        => null,
+                ];
+
+                try {
+                    $this->lastResponse['body'] = $response->json();
+                } catch (\Exception $e) {
+                    $this->lastResponse['body'] = $response->body();
+                }
+
+                if ($response->successful()) {
+                    $body = $this->lastResponse['body'];
+                    // Wablas returns {"status":true/false,...}
+                    if (is_array($body) && isset($body['status']) && $body['status'] === false) {
+                        return false;
+                    }
+                    return true;
+                }
+            } catch (\Exception $e) {
+                $this->lastResponse = ['http_status' => 0, 'body' => $e->getMessage()];
+            }
+
+            return false;
+        }
+
         // Fallback / legacy: try device-based providers (like fonnte)
         $targets = array_values(array_unique(array_filter([
             $target,
@@ -122,14 +162,14 @@ class WhatsAppService
                     'Authorization' => (string) config('services.whatsapp.token'),
                 ])
                 ->post((string) config('services.whatsapp.endpoint'), [
-                    'target' => $t,
-                    'message' => $message,
+                    'target'      => $t,
+                    'message'     => $message,
                     'countryCode' => (string) config('services.whatsapp.country_code', '62'),
                 ]);
 
             $this->lastResponse = [
                 'http_status' => $response->status(),
-                'body' => null,
+                'body'        => null,
             ];
 
             try {
