@@ -24,6 +24,17 @@ class AutoGenerateTagihanService
             return 0;
         }
 
+        // Fast exit: if any pembayaran already exists for this user+periode, skip the heavy generation loop.
+        // This prevents slow logins for users who already have tagihan this month.
+        $wargaIds = $wargas->pluck('id')->all();
+        $alreadyExists = Pembayaran::whereIn('warga_id', $wargaIds)
+            ->where('periode', $periode)
+            ->exists();
+
+        if ($alreadyExists) {
+            return 0;
+        }
+
         $jenisPembayarans = JenisPembayaran::query()
             ->where(function ($query) {
                 $query->where('nominal', '>', 0)

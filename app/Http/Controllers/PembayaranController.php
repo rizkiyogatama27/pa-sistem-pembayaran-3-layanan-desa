@@ -83,7 +83,8 @@ class PembayaranController extends Controller
             ->select('pembayarans.*')
             ->orderBy('wargas.nama')
             ->orderByDesc('pembayarans.id')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         $jenisPembayarans = JenisPembayaran::query()
             ->when($selectedKategori === 'donasi', function ($query) {
@@ -609,54 +610,54 @@ class PembayaranController extends Controller
     public function sendWhatsappReminderAll(WhatsAppService $whatsAppService)
     {
         if (! $whatsAppService->enabled()) {
-            return redirect()->back()->with('error', 'WhatsApp belum diaktifkan di konfigurasi.');
+            return redirect()->back()->with('error', 'WhatsApp belum diaktifkan di konfigurasi. Pastikan WHATSAPP_ENABLED=true dan WHATSAPP_TOKEN sudah diset di Vercel.');
         }
 
+        // Ambil semua warga yang punya tagihan pending (belum bayar) dengan jumlah > 0
         $wargaIds = Pembayaran::query()
             ->where('status', 'pending')
             ->where('jumlah', '>', 0)
-            ->whereNotNull('jatuh_tempo')
-            ->whereDate('jatuh_tempo', '<=', now()->addDays(3))
             ->groupBy('warga_id')
             ->pluck('warga_id')
             ->all();
 
         if (empty($wargaIds)) {
-            return redirect()->back()->with('error', 'Tidak ada warga dengan tagihan yang mepet (H-3) atau menunggak.');
+            return redirect()->back()->with('error', 'Tidak ada warga dengan tagihan yang belum lunas.');
         }
 
         $dispatched = 0;
         $skipped = 0;
 
-        foreach ($wargaIds as $wargaId) {
-            $tagihans = Pembayaran::with('jenisPembayaran')
-                ->where('warga_id', $wargaId)
-                ->where('status', 'pending')
-                ->where('jumlah', '>', 0)
-                ->whereNotNull('jatuh_tempo')
-                ->whereDate('jatuh_tempo', '<=', now()->addDays(3))
-                ->orderBy('jatuh_tempo')
-                ->get();
+        // Pre-load semua tagihan sekaligus untuk menghindari query N+1
+        $allTagihans = Pembayaran::with(['jenisPembayaran', 'warga'])
+            ->whereIn('warga_id', $wargaIds)
+            ->where('status', 'pending')
+            ->where('jumlah', '>', 0)
+            ->orderBy('warga_id')
+            ->orderBy('jatuh_tempo')
+            ->get()
+            ->groupBy('warga_id');
 
-            if ($tagihans->isEmpty()) {
+        foreach ($wargaIds as $wargaId) {
+            $tagihans = $allTagihans->get($wargaId);
+
+            if (! $tagihans || $tagihans->isEmpty()) {
                 continue;
             }
 
+            // Skip jika sudah dikirim hari ini (kecuali ada parameter force)
             $alreadySentToday = $tagihans->every(function (Pembayaran $item) {
-                if (! $item->last_whatsapp_reminder_at) {
-                    return false;
-                }
-
-                return Carbon::parse($item->last_whatsapp_reminder_at)->isToday();
+                return $item->last_whatsapp_reminder_at &&
+                    Carbon::parse($item->last_whatsapp_reminder_at)->isToday();
             });
 
             if ($alreadySentToday && !request()->has('force')) {
                 $skipped++;
                 WhatsAppReminderLog::create([
-                    'warga_id' => $wargaId,
-                    'recipient' => (string) ($tagihans->first()->warga?->no_hp ?? ''),
-                    'status' => 'skipped',
-                    'message' => 'Reminder dilewati karena sudah terkirim hari ini.',
+                    'warga_id'      => $wargaId,
+                    'recipient'     => (string) ($tagihans->first()->warga?->no_hp ?? ''),
+                    'status'        => 'skipped',
+                    'message'       => 'Reminder dilewati karena sudah terkirim hari ini.',
                     'error_message' => 'Rate limit harian.',
                 ]);
                 continue;
@@ -672,7 +673,7 @@ class PembayaranController extends Controller
 
         AdminActivity::log('reminder', 'send_whatsapp_mass', 'Menjadwalkan pengiriman reminder WhatsApp massal.', [
             'dispatched' => $dispatched,
-            'skipped' => $skipped,
+            'skipped'    => $skipped,
         ]);
 
         return redirect()->back()->with('success', "Menjadwalkan pengiriman WA untuk {$dispatched} warga, dilewati {$skipped}.");

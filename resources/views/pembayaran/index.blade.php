@@ -409,6 +409,29 @@
 				</tbody>
 			</table>
 		</div>
+
+		@if($pembayarans->hasPages())
+		<div style="padding:16px 20px; border-top:1px solid #2c2c28; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+			<span style="font-size:13px;color:#9ca3af;">
+				Menampilkan {{ $pembayarans->firstItem() }}–{{ $pembayarans->lastItem() }} dari {{ $pembayarans->total() }} data
+			</span>
+			<div style="display:flex;gap:6px;align-items:center;">
+				@if($pembayarans->onFirstPage())
+					<span style="height:36px;padding:0 14px;border-radius:8px;background:#2c2c28;color:#6b7280;display:inline-flex;align-items:center;font-size:13px;">← Sebelumnya</span>
+				@else
+					<a href="{{ $pembayarans->previousPageUrl() }}" style="height:36px;padding:0 14px;border-radius:8px;background:#3d3d37;color:#ffffff;display:inline-flex;align-items:center;font-size:13px;text-decoration:none;border:1px solid #5a5a53;">← Sebelumnya</a>
+				@endif
+
+				<span style="font-size:13px;color:#9ca3af;padding:0 8px;">Hal {{ $pembayarans->currentPage() }} / {{ $pembayarans->lastPage() }}</span>
+
+				@if($pembayarans->hasMorePages())
+					<a href="{{ $pembayarans->nextPageUrl() }}" style="height:36px;padding:0 14px;border-radius:8px;background:#3d3d37;color:#ffffff;display:inline-flex;align-items:center;font-size:13px;text-decoration:none;border:1px solid #5a5a53;">Selanjutnya →</a>
+				@else
+					<span style="height:36px;padding:0 14px;border-radius:8px;background:#2c2c28;color:#6b7280;display:inline-flex;align-items:center;font-size:13px;">Selanjutnya →</span>
+				@endif
+			</div>
+		</div>
+		@endif
 	</div>
 </div>
 
