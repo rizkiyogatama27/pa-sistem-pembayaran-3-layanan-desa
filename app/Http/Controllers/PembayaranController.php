@@ -625,23 +625,32 @@ class PembayaranController extends Controller
             return redirect()->back()->with('error', 'Tidak ada warga dengan tagihan yang belum lunas.');
         }
 
-        $dispatched = 0;
+        $sent    = 0;
         $skipped = 0;
-
-        // Pre-load semua tagihan sekaligus untuk menghindari query N+1
-        $allTagihans = Pembayaran::with(['jenisPembayaran', 'warga'])
-            ->whereIn('warga_id', $wargaIds)
-            ->where('status', 'pending')
-            ->where('jumlah', '>', 0)
-            ->orderBy('warga_id')
-            ->orderBy('jatuh_tempo')
-            ->get()
-            ->groupBy('warga_id');
+        $failed  = 0;
+        $failReasons = [];
 
         foreach ($wargaIds as $wargaId) {
             $tagihans = $allTagihans->get($wargaId);
 
             if (! $tagihans || $tagihans->isEmpty()) {
+                continue;
+            }
+
+            $first  = $tagihans->first();
+            $warga  = $first->warga;
+            $noHp   = (string) ($warga?->no_hp ?? '');
+
+            // Skip jika nomor HP kosong
+            if (trim($noHp) === '') {
+                $skipped++;
+                WhatsAppReminderLog::create([
+                    'warga_id'      => $wargaId,
+                    'recipient'     => '',
+                    'status'        => 'skipped',
+                    'message'       => 'Nomor HP tidak ada.',
+                    'error_message' => 'No phone number for warga ID ' . $wargaId,
+                ]);
                 continue;
             }
 
@@ -655,7 +664,7 @@ class PembayaranController extends Controller
                 $skipped++;
                 WhatsAppReminderLog::create([
                     'warga_id'      => $wargaId,
-                    'recipient'     => (string) ($tagihans->first()->warga?->no_hp ?? ''),
+                    'recipient'     => $noHp,
                     'status'        => 'skipped',
                     'message'       => 'Reminder dilewati karena sudah terkirim hari ini.',
                     'error_message' => 'Rate limit harian.',
@@ -663,20 +672,84 @@ class PembayaranController extends Controller
                 continue;
             }
 
-            $pembayaranIds = $tagihans->pluck('id')->all();
+            // Susun pesan
+            $nama          = (string) ($warga?->nama ?? 'Warga');
+            $countTagihan  = $tagihans->count();
+            $totalTagihan  = (int) $tagihans->sum('jumlah');
+            $totalDenda    = (int) $tagihans->sum('denda');
 
-            if (! empty($pembayaranIds)) {
-                SendWhatsAppReminderJob::dispatch($wargaId, $pembayaranIds);
-                $dispatched++;
+            $detailLines = $tagihans->take(3)->map(function (Pembayaran $item) {
+                $periode    = (string) ($item->periode ?? '-');
+                $jatuhTempo = $item->jatuh_tempo
+                    ? Carbon::parse($item->jatuh_tempo)->translatedFormat('d M Y')
+                    : '-';
+                return '• ' . (optional($item->jenisPembayaran)->nama ?: '-') . ' (' . $periode . ') — Rp ' . number_format((int) $item->jumlah, 0, ',', '.');
+            })->values()->all();
+
+            $bodyLines   = [];
+            $bodyLines[] = '🔔 PENGINGAT TAGIHAN — Desa';
+            $bodyLines[] = 'Halo ' . $nama . ',';
+            $bodyLines[] = 'Anda memiliki ' . $countTagihan . ' tagihan yang belum lunas.';
+            $bodyLines[] = '';
+            $bodyLines[] = '— Rincian —';
+            foreach ($detailLines as $l) {
+                $bodyLines[] = $l;
+            }
+            $bodyLines[] = '';
+            $bodyLines[] = 'Total: Rp ' . number_format($totalTagihan, 0, ',', '.');
+            if ($totalDenda > 0) {
+                $bodyLines[] = 'Denda: Rp ' . number_format($totalDenda, 0, ',', '.');
+            }
+            $bodyLines[] = '';
+            $bodyLines[] = 'Silakan login ke portal desa untuk melakukan pembayaran.';
+            $bodyLines[] = 'Terima kasih.';
+
+            $message = implode("\n", $bodyLines);
+
+            // Kirim LANGSUNG (tidak melalui Job agar tidak tertunda di Vercel)
+            $isSent  = $whatsAppService->send($noHp, $message);
+            $lastRes = $whatsAppService->getLastResponse();
+
+            if ($isSent) {
+                Pembayaran::whereIn('id', $tagihans->pluck('id')->all())
+                    ->update(['last_whatsapp_reminder_at' => now()->toDateString()]);
+
+                WhatsAppReminderLog::create([
+                    'pembayaran_id' => $first->id,
+                    'warga_id'      => $wargaId,
+                    'recipient'     => $noHp,
+                    'status'        => 'sent',
+                    'message'       => $message,
+                    'sent_at'       => now(),
+                ]);
+                $sent++;
+            } else {
+                $errDetail = $lastRes ? json_encode($lastRes) : 'Provider failed';
+                WhatsAppReminderLog::create([
+                    'pembayaran_id' => $first->id,
+                    'warga_id'      => $wargaId,
+                    'recipient'     => $noHp,
+                    'status'        => 'failed',
+                    'message'       => $message,
+                    'error_message' => $errDetail,
+                ]);
+                $failed++;
+                $failReasons[] = $nama . ' (' . $noHp . '): ' . $errDetail;
             }
         }
 
-        AdminActivity::log('reminder', 'send_whatsapp_mass', 'Menjadwalkan pengiriman reminder WhatsApp massal.', [
-            'dispatched' => $dispatched,
-            'skipped'    => $skipped,
+        AdminActivity::log('reminder', 'send_whatsapp_mass', 'Kirim reminder WhatsApp massal.', [
+            'sent'    => $sent,
+            'skipped' => $skipped,
+            'failed'  => $failed,
         ]);
 
-        return redirect()->back()->with('success', "Menjadwalkan pengiriman WA untuk {$dispatched} warga, dilewati {$skipped}.");
+        if ($failed > 0 && $sent === 0) {
+            $detail = implode(' | ', array_slice($failReasons, 0, 2));
+            return redirect()->back()->with('error', "Gagal mengirim ke {$failed} warga. Detail: {$detail}");
+        }
+
+        return redirect()->back()->with('success', "✅ Terkirim ke {$sent} warga, dilewati {$skipped}, gagal {$failed}.");
     }
 
     private function isAirJenis(JenisPembayaran $jenisPembayaran): bool
