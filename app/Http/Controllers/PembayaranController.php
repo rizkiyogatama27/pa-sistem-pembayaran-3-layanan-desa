@@ -630,6 +630,16 @@ class PembayaranController extends Controller
         $failed  = 0;
         $failReasons = [];
 
+        // Pre-load semua tagihan sekaligus untuk menghindari query N+1
+        $allTagihans = Pembayaran::with(['jenisPembayaran', 'warga'])
+            ->whereIn('warga_id', $wargaIds)
+            ->where('status', 'pending')
+            ->where('jumlah', '>', 0)
+            ->orderBy('warga_id')
+            ->orderBy('jatuh_tempo')
+            ->get()
+            ->groupBy('warga_id');
+
         foreach ($wargaIds as $wargaId) {
             $tagihans = $allTagihans->get($wargaId);
 
