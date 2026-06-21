@@ -651,6 +651,12 @@ class PembayaranController extends Controller
             $warga  = $first->warga;
             $noHp   = (string) ($warga?->no_hp ?? '');
 
+            // Fallback: jika warga.no_hp kosong, coba ambil dari users.no_hp
+            if (trim($noHp) === '') {
+                $linkedUser = \App\Models\User::where('warga_id', $wargaId)->first();
+                $noHp = (string) ($linkedUser?->no_hp ?? '');
+            }
+
             // Skip jika nomor HP kosong
             if (trim($noHp) === '') {
                 $skipped++;

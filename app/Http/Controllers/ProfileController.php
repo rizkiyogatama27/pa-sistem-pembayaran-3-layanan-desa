@@ -33,8 +33,15 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
+        // Simpan no_hp langsung ke tabel users agar warga bisa isi sendiri
+        // tanpa perlu menunggu admin menghubungkan akun ke data warga
+        if ($request->has('no_hp')) {
+            $user->no_hp = $request->input('no_hp');
+        }
+
         $user->save();
 
+        // Jika sudah terhubung ke data warga, sinkronisasi juga ke tabel wargas
         if ($user->warga_id) {
             $updateData = [];
             if ($request->has('no_hp')) {
@@ -43,7 +50,7 @@ class ProfileController extends Controller
             if ($request->has('alamat')) {
                 $updateData['alamat'] = $request->input('alamat');
             }
-            
+
             if (!empty($updateData)) {
                 $user->warga()->update($updateData);
             }
