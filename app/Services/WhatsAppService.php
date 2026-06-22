@@ -115,14 +115,21 @@ class WhatsAppService
 
         if ($provider === 'wablas') {
             // Wablas API format: phone + message in JSON body, token in header
+            // Secret key diperlukan jika IP tidak di-whitelist (misal: Vercel serverless)
+            $secret = (string) config('services.whatsapp.secret', '');
             try {
+                $payload = [
+                    'phone'   => $target,
+                    'message' => $message,
+                ];
+                if ($secret !== '') {
+                    $payload['secret'] = $secret;
+                }
+
                 $response = Http::withHeaders([
                     'Authorization' => (string) config('services.whatsapp.token'),
                     'Content-Type'  => 'application/json',
-                ])->post((string) config('services.whatsapp.endpoint'), [
-                    'phone'   => $target,
-                    'message' => $message,
-                ]);
+                ])->post((string) config('services.whatsapp.endpoint'), $payload);
 
                 $this->lastResponse = [
                     'http_status' => $response->status(),

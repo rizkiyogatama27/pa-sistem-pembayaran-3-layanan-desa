@@ -37,10 +37,11 @@ return [
     ],
 
     'whatsapp' => [
-        'provider' => env('WHATSAPP_PROVIDER', 'fonnte'),
+        'provider' => env('WHATSAPP_PROVIDER', 'wablas'),
         'enabled' => env('WHATSAPP_ENABLED', false),
         'token' => env('WHATSAPP_TOKEN'),
-        'endpoint' => env('WHATSAPP_ENDPOINT', 'https://api.fonnte.com/send'),
+        'secret' => env('WHATSAPP_SECRET', ''),
+        'endpoint' => env('WHATSAPP_ENDPOINT', 'https://texas.wablas.com/api/send-message'),
         'country_code' => env('WHATSAPP_COUNTRY_CODE', '62'),
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
     ],
