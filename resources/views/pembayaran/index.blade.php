@@ -346,7 +346,7 @@
 									<span class="text-gray-400">-</span>
 								@endif
 							</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $p->tanggal_bayar }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ $p->tanggal_bayar ? \Illuminate\Support\Carbon::parse($p->tanggal_bayar)->translatedFormat('d M Y') : '-' }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">
 								<div>Rp {{ number_format($p->jumlah,0,',','.') }}</div>
 								@if($isJenisAir && $p->meter_awal !== null && $p->meter_akhir !== null)

@@ -197,7 +197,7 @@
                                     <span style="color:#94a3b8; font-size:12px;">-</span>
                                 @endif
                             </td>
-                            <td>{{ $item->tanggal_bayar }}</td>
+                            <td>{{ $item->tanggal_bayar ? \Illuminate\Support\Carbon::parse($item->tanggal_bayar)->translatedFormat('d M Y') : '-' }}</td>
                             <td style="font-weight:800; color:#0f6f63;">Rp {{ number_format($item->jumlah, 0, ',', '.') }}</td>
                             <td>
                                 <span class="status-pill {{ $isPaid ? 'pill-paid' : ($isDraft ? 'pill-draft' : 'pill-pending') }}">{{ $isPaid ? 'Lunas' : ($isDraft ? 'Draft' : 'Pending') }}</span>
