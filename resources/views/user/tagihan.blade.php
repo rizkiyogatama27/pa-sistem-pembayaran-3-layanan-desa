@@ -77,14 +77,14 @@
 
     @if(!$warga)
         <div class="portal-empty">Data warga belum terhubung ke akun ini. Hubungi admin untuk menghubungkan akun user ke data warga.</div>
-    @elseif(empty($warga->no_hp) || empty($warga->alamat) || $warga->alamat === '-')
+    @elseif(empty($warga->no_hp) && empty(auth()->user()->no_hp))
         <div style="margin-top: 18px; border: 1.5px solid #fecaca; background: #fef2f2; padding: 16px; border-radius: 14px; display: flex; flex-direction: column; gap: 10px;">
             <div style="color: #b91c1c; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
                 <svg style="width:22px;height:22px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                Profil Anda Belum Lengkap!
+                Nomor WhatsApp Belum Diisi!
             </div>
             <div style="color: #7f1d1d; font-size: 14px; line-height: 1.5;">
-                Anda belum mengisi <b>Nomor WhatsApp</b> atau <b>Alamat Lengkap</b>. Data ini wajib diisi agar sistem bisa memproses pembayaran dan mengirimkan bukti lunas ke WA Anda.
+                Anda belum mengisi <b>Nomor WhatsApp</b>. Data ini wajib diisi agar sistem bisa mengirimkan nota dan pengingat tagihan ke WA Anda.
             </div>
             <div>
                 <a href="{{ route('profile.edit') }}" style="display: inline-block; padding: 8px 16px; background: #dc2626; color: white; text-decoration: none; font-size: 13px; font-weight: 800; border-radius: 8px; transition: background 0.2s;">
