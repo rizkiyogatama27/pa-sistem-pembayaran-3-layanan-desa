@@ -33,10 +33,7 @@
             <svg class="sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6M9 8h6"/><path d="M4 6h16v12H4z"/></svg>
             Verifikasi User
         </a>
-        <a href="{{ route('jenis-pembayaran.index') }}" class="sidebar-link{{ request()->routeIs('jenis-pembayaran.*') ? ' active' : '' }}">
-            <svg class="sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3 0 2.5 3 5 3 5s3-2.5 3-5c0-1.657-1.343-3-3-3z"/><circle cx="12" cy="8" r="3"/></svg>
-            Jenis Pembayaran
-        </a>
+
         <div class="sidebar-section">Pembayaran</div>
         <a href="{{ route('pembayaran.wajib') }}" class="sidebar-link{{ request()->routeIs('pembayaran.wajib') ? ' active' : '' }}">
             <svg class="sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M16 3h-1a2 2 0 00-2 2v3"/></svg>
