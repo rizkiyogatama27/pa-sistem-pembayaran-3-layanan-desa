@@ -134,8 +134,8 @@
 
         <section class="right">
             <div class="form-card">
-                <div style="text-align:center; margin-bottom: 20px;">
-                    <img src="/welcome-icon.png" alt="Selamat Datang" style="width: 90px; height: 90px; object-fit: contain; opacity: 0.85;">
+                <div style="text-align:center; margin-bottom: 18px;">
+                    <img src="/welcome-icon.png" alt="Selamat Datang" style="width:88px;height:88px;object-fit:contain;">
                 </div>
                 <h2 class="title" style="text-align:center;">Selamat Datang</h2>
                 <p class="subtitle" style="text-align:center;">Masuk ke portal layanan digital desa untuk mengelola tagihan dan pembayaran Anda.</p>
