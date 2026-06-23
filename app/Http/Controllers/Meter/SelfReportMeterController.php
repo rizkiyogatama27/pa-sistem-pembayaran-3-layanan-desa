@@ -49,27 +49,28 @@ class SelfReportMeterController extends Controller
         $absolute = $photoFile->getRealPath();
         $photoHash = hash_file('sha256', $absolute);
 
-        // Karena Vercel (Serverless) bersifat Read-Only untuk Storage lokal, 
-        // kita menggunakan layanan Catbox.moe untuk menyimpan gambar meteran secara permanen dan gratis.
+        // Karena Vercel (Serverless) memblokir / diblokir oleh beberapa file host,
+        // kita menggunakan layanan freeimage.host untuk menyimpan gambar meteran secara permanen dan gratis.
         $path = null;
         try {
-            $response = \Illuminate\Support\Facades\Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            ])->attach(
-                'fileToUpload',
+            $freeImageKey = '6d207e02198a847aa98d0a2a901485a5';
+            $response = \Illuminate\Support\Facades\Http::attach(
+                'source',
                 file_get_contents($absolute),
                 $photoFile->getClientOriginalName()
-            )->post('https://catbox.moe/user/api.php', [
-                'reqtype' => 'fileupload'
+            )->post('https://freeimage.host/api/1/upload', [
+                'key' => $freeImageKey,
+                'action' => 'upload'
             ]);
 
             if ($response->successful()) {
-                $path = trim($response->body());
+                $data = $response->json();
+                $path = $data['image']['url'] ?? null;
             } else {
-                \Log::error('Catbox upload failed: ' . $response->status());
+                \Log::error('FreeImage upload failed: ' . $response->status());
             }
         } catch (\Exception $e) {
-            \Log::error('Catbox upload error: ' . $e->getMessage());
+            \Log::error('FreeImage upload error: ' . $e->getMessage());
         }
 
         // Fallback jika gagal upload ke catbox, setidaknya simpan nama aslinya (meski tidak akan bisa diload gambarnya nanti)
