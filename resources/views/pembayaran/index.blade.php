@@ -97,23 +97,56 @@
 
 	.action-link {
 		display: inline-flex;
-		align-items: center;
-		padding: 6px 12px;
-		border-radius: 10px;
-		border: 1px solid #cfe0f1;
-		color: #215d90;
-		text-decoration: none;
-		background: #fff;
-	}
-
-	.action-danger {
+	.btn-aksi {
 		display: inline-flex;
 		align-items: center;
-		padding: 6px 12px;
-		border-radius: 10px;
+		justify-content: center;
+		gap: 5px;
+		padding: 6px 12px !important;
+		font-size: 12px !important;
+		font-weight: 700;
+		border-radius: 8px !important;
+		text-decoration: none;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 		border: 1px solid transparent;
-		color: #fff;
-		background: #ef4444;
+		cursor: pointer;
+		line-height: 1 !important;
+		white-space: nowrap;
+	}
+	.btn-aksi:active {
+		transform: scale(0.96);
+	}
+	.btn-invoice {
+		background: #f8fafc; color: #64748b; border-color: #e2e8f0;
+	}
+	.btn-invoice:hover {
+		background: #f1f5f9; color: #334155; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+	}
+	.btn-edit {
+		background: #f0f9ff; color: #0284c7; border-color: #bae6fd;
+	}
+	.btn-edit:hover {
+		background: #e0f2fe; color: #0369a1; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(2,132,199,0.06);
+	}
+	.btn-bayar {
+		background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; border-color: transparent;
+		box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+	}
+	.btn-bayar:hover {
+		box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35); transform: translateY(-1px);
+	}
+	.btn-wa {
+		background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-color: transparent;
+		box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+	}
+	.btn-wa:hover {
+		box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35); transform: translateY(-1px);
+	}
+	.btn-hapus {
+		background: #fff1f2; color: #e11d48; border-color: #fecdd3;
+	}
+	.btn-hapus:hover {
+		background: #ffe4e6; color: #be123c; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(225,29,72,0.06);
 	}
 
 	#payment-table td,
@@ -123,29 +156,13 @@
 
 	#payment-table .aksi-wrap {
 		display: flex;
-		gap: 6px;
+		gap: 8px;
 		align-items: center;
 		flex-wrap: nowrap;
 	}
 
 	#payment-table .aksi-wrap form {
 		margin: 0;
-	}
-
-	#payment-table .aksi-wrap a,
-	#payment-table .aksi-wrap button {
-		white-space: nowrap;
-	}
-
-	#payment-table .aksi-wrap a,
-	#payment-table .aksi-wrap button {
-		padding: 6px 10px !important;
-		font-size: 13px !important;
-		line-height: 1 !important;
-		border-radius: 10px !important;
-	}
-
-	#payment-table .aksi-wrap form {
 		display: inline-block;
 	}
 
@@ -356,10 +373,10 @@
 							</td>
 							<td class="px-4 py-3 text-sm col-aksi" style="vertical-align: middle;">
 								<div class="aksi-wrap">
-									<a href="{{ route('pembayaran.invoice', $p->id) }}" class="action-link">Invoice</a>
-									<a href="{{ route('pembayaran.edit', $p->id) }}" class="action-link">Edit</a>
+									<a href="{{ route('pembayaran.invoice', $p->id) }}" class="btn-aksi btn-invoice"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Invoice</a>
+									<a href="{{ route('pembayaran.edit', $p->id) }}" class="btn-aksi btn-edit"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>Edit</a>
 									@if($p->status !== 'paid')
-										<a href="{{ route('pembayaran.cash.form', $p->id) }}" class="action-link" style="background:#0ea5e9;color:#fff;border-color:#0ea5e9;">Bayar Tunai</a>
+										<a href="{{ route('pembayaran.cash.form', $p->id) }}" class="btn-aksi btn-bayar"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Bayar Tunai</a>
 										@php
 											$noHp = $p->warga->no_hp ?? '';
 											// Normalisasi nomor HP ke format internasional (62)
@@ -376,12 +393,12 @@
 												   "Terima kasih.";
 											$waUrl = "https://api.whatsapp.com/send?phone=" . $noHp . "&text=" . urlencode($msg);
 										@endphp
-										<a href="{{ $waUrl }}" target="_blank" style="display:inline-flex;align-items:center;padding:6px 12px;border-radius:10px;border:1px solid transparent;color:#fff;background:#10b981;font-weight:700;text-decoration:none;">Kirim WA</a>
+										<a href="{{ $waUrl }}" target="_blank" class="btn-aksi btn-wa"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Kirim WA</a>
 										
 										<form action="{{ route('pembayaran.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Hapus data pembayaran ini?')">
 											@csrf
 											@method('DELETE')
-											<button type="submit" class="action-danger">Hapus</button>
+											<button type="submit" class="btn-aksi btn-hapus"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>Hapus</button>
 										</form>
 									@endif
 								</div>
