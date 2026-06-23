@@ -95,8 +95,6 @@
 		font-weight: 800;
 	}
 
-	.action-link {
-		display: inline-flex;
 	.btn-aksi {
 		display: inline-flex;
 		align-items: center;
