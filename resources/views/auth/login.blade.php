@@ -18,7 +18,7 @@
             background: #f8fafc; color: var(--ink); overflow: hidden;
         }
         .page {
-            min-height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr;
+            height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr;
         }
         .left {
             position: relative; overflow: hidden; padding: 12vh 40px 40px; color: #fff;
@@ -46,7 +46,7 @@
         .left-footer { position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: rgba(255,255,255,0.4); font-size: 12px; }
         
         .right {
-            background: #ffffff; display: flex; align-items: flex-start; justify-content: center; padding: 12vh 40px 40px; position: relative;
+            background: #ffffff; display: flex; align-items: flex-start; justify-content: center; padding: 12vh 40px 40px; position: relative; overflow-y: auto;
         }
         .form-card { width: 100%; max-width: 400px; }
         .title { font-size: 28px; font-weight: 800; margin: 0 0 8px; color: #0f172a; }
