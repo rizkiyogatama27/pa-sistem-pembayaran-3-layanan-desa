@@ -113,12 +113,16 @@
                                 </div>
                             </td>
                             <td>
-                                @if($r->meter_photo)
-                                    <a href="{{ str_starts_with($r->meter_photo, 'http') ? $r->meter_photo : asset('storage/' . $r->meter_photo) }}" target="_blank" title="Klik untuk perbesar">
-                                        <img src="{{ str_starts_with($r->meter_photo, 'http') ? $r->meter_photo : asset('storage/' . $r->meter_photo) }}" class="photo-thumb" alt="Foto Meter" />
+                                @if(empty($r->meter_photo))
+                                    <span style="color:#94a3b8;font-size:12px;">Tidak ada</span>
+                                @elseif(str_starts_with($r->meter_photo, 'http'))
+                                    <a href="{{ $r->meter_photo }}" target="_blank" title="Klik untuk perbesar">
+                                        <img src="{{ $r->meter_photo }}" class="photo-thumb" alt="Foto Meter" onerror="this.src='/logo-simp-mld.png'" />
                                     </a>
                                 @else
-                                    <span style="color:#94a3b8;font-size:12px;">Tidak ada</span>
+                                    <div style="font-size:11px; color:#ef4444; border: 1px solid #fca5a5; background: #fef2f2; padding: 4px; border-radius: 4px; text-align: center; width: 60px; word-break: break-all;">
+                                        Gagal Upload
+                                    </div>
                                 @endif
                             </td>
                             <td>
@@ -155,12 +159,6 @@
                                         </button>
                                     </form>
 
-                                    <form action="{{ route('admin.meter.verify.schedule', $r->id) }}" method="post">
-                                        @csrf
-                                        <button class="btn btn-audit" style="width: 100%;">
-                                            <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                            Jadwalkan Audit
-                                        </button>
                                     </form>
                                 </div>
                             </td>
