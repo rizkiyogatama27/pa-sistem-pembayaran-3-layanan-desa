@@ -77,6 +77,7 @@ class MeterOcrService
                     'language' => 'eng',
                     'scale' => 'true',
                     'isTable' => 'false',
+                    'OCREngine' => '2'
                 ]);
 
             if (! $response->successful()) {

@@ -115,7 +115,7 @@
                             <td>
                                 @if(empty($r->meter_photo))
                                     <span style="color:#94a3b8;font-size:12px;">Tidak ada</span>
-                                @elseif(str_starts_with($r->meter_photo, 'http'))
+                                @elseif(str_starts_with($r->meter_photo, 'http') || str_starts_with($r->meter_photo, 'data:image'))
                                     <a href="{{ $r->meter_photo }}" target="_blank" title="Klik untuk perbesar">
                                         <img src="{{ $r->meter_photo }}" class="photo-thumb" alt="Foto Meter" onerror="this.src='/logo-simp-mld.png'" />
                                     </a>

@@ -50,7 +50,7 @@ class SelfReportMeterController extends Controller
         $photoHash = hash_file('sha256', $absolute);
 
         // Karena Vercel (Serverless) memblokir / diblokir oleh beberapa file host,
-        // kita menggunakan layanan freeimage.host untuk menyimpan gambar meteran secara permanen dan gratis.
+        // kita mencoba freeimage.host terlebih dahulu. Jika gagal, kita encode jadi base64.
         $path = null;
         try {
             $freeImageKey = '6d207e02198a847aa98d0a2a901485a5';
@@ -66,16 +66,22 @@ class SelfReportMeterController extends Controller
             if ($response->successful()) {
                 $data = $response->json();
                 $path = $data['image']['url'] ?? null;
-            } else {
-                \Log::error('FreeImage upload failed: ' . $response->status());
             }
         } catch (\Exception $e) {
             \Log::error('FreeImage upload error: ' . $e->getMessage());
         }
 
-        // Fallback jika gagal upload ke catbox, setidaknya simpan nama aslinya (meski tidak akan bisa diload gambarnya nanti)
+        // Fallback: Jika gagal upload, simpan sebagai base64 string langsung ke DB
         if (! $path || ! str_starts_with($path, 'http')) {
-            $path = 'failed_upload_' . time() . '.jpg';
+            try {
+                // Pastikan kolom meter_photo bertipe LONGTEXT di TiDB Serverless (dieksekusi sekali jalan)
+                \Illuminate\Support\Facades\DB::statement('ALTER TABLE meter_readings MODIFY meter_photo LONGTEXT');
+            } catch (\Exception $e) {
+                // abaikan jika sudah dirubah
+            }
+            $mime = $photoFile->getMimeType();
+            $base64 = base64_encode(file_get_contents($absolute));
+            $path = 'data:' . $mime . ';base64,' . $base64;
         }
 
         // try extract EXIF
