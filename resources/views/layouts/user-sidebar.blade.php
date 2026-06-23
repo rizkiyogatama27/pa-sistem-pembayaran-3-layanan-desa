@@ -24,6 +24,7 @@
                 $activeTagihanCount = \App\Models\Pembayaran::query()
                     ->where('warga_id', $linkedWargaId)
                     ->where('status', 'pending')
+                    ->where('jumlah', '>', 0)
                     ->count();
             }
         }
