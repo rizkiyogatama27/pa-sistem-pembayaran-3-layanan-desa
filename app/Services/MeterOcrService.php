@@ -18,7 +18,8 @@ class MeterOcrService
         }
 
         $ocrSpace = $this->tryOcrSpace($absolutePath);
-        if ($ocrSpace['status'] === 'ok') {
+        if ($ocrSpace['status'] !== 'not_configured') {
+            // Return ocrSpace even if failed, so we can see the real error (e.g. timeout, no digits)
             return $ocrSpace;
         }
 
@@ -69,13 +70,14 @@ class MeterOcrService
         }
 
         try {
-            $response = Http::asMultipart()->timeout(30)->post('https://api.ocr.space/parse/image', [
-                ['name' => 'apikey', 'contents' => $apiKey],
-                ['name' => 'language', 'contents' => 'eng'],
-                ['name' => 'scale', 'contents' => 'true'],
-                ['name' => 'isTable', 'contents' => 'false'],
-                ['name' => 'file', 'contents' => fopen($absolutePath, 'r')],
-            ]);
+            $response = Http::timeout(30)
+                ->attach('file', file_get_contents($absolutePath), 'meter.jpg')
+                ->post('https://api.ocr.space/parse/image', [
+                    'apikey' => $apiKey,
+                    'language' => 'eng',
+                    'scale' => 'true',
+                    'isTable' => 'false',
+                ]);
 
             if (! $response->successful()) {
                 return $this->emptyResult('failed', 'OCR.space request failed: ' . $response->status());
