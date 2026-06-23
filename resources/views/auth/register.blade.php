@@ -174,6 +174,12 @@
                     </div>
 
                     <div class="field" style="margin-bottom: 16px;">
+                        <label class="label" for="alamat">Alamat Lengkap <span style="color:#ef4444;">*</span></label>
+                        <textarea id="alamat" class="input" name="alamat" required placeholder="Masukkan alamat lengkap (Dusun, RT/RW, Desa, Kec.)" style="height: 80px; padding-top: 12px; resize: vertical;">{{ old('alamat') }}</textarea>
+                        @error('alamat') <div class="field-error">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="field" style="margin-bottom: 16px;">
                         <label class="label" for="no_hp">Nomor WhatsApp <span style="color:#ef4444;">*</span></label>
                         <input id="no_hp" class="input" type="text" name="no_hp" value="{{ old('no_hp') }}" required placeholder="Contoh: 081234567890" inputmode="numeric">
                         <div style="font-size:12px;color:#64748b;margin-top:5px;">Nomor ini digunakan untuk menerima notifikasi tagihan via WhatsApp.</div>

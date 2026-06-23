@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
             'nik'      => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
             'kk'       => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
             'no_hp'    => ['required', 'string', 'max:20'],
+            'alamat'   => ['required', 'string'],
         ]);
 
         $user = User::create([
@@ -44,6 +45,7 @@ class RegisteredUserController extends Controller
             'nik'                 => $request->nik,
             'kk'                  => $request->kk,
             'no_hp'               => $request->no_hp,
+            'alamat'              => $request->alamat,
             'role'                => 'user',
             'verification_status' => 'pending',
         ]);
