@@ -134,11 +134,8 @@
 
         <section class="right">
             <div class="form-card">
-                <div style="text-align:center; margin-bottom: 18px;">
-                    <img src="/welcome-icon.png" alt="Selamat Datang" style="width:88px;height:88px;object-fit:contain;">
-                </div>
-                <h2 class="title" style="text-align:center;">Selamat Datang</h2>
-                <p class="subtitle" style="text-align:center;">Masuk ke portal layanan digital desa untuk mengelola tagihan dan pembayaran Anda.</p>
+                <h2 class="title">Selamat Datang 👋</h2>
+                <p class="subtitle">Masuk ke portal layanan digital desa untuk mengelola tagihan dan pembayaran Anda.</p>
 
                 @if (session('status'))
                     <div class="alert alert-success">{{ session('status') }}</div>
