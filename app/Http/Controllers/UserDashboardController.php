@@ -126,15 +126,8 @@ class UserDashboardController extends Controller
             $pembayarans = Pembayaran::with('jenisPembayaran')
                 ->where('warga_id', $warga->id)
                 ->where(function ($baseQuery) use ($status) {
-                    if ($status === 'draft') {
-                        return;
-                    }
-
-                    $baseQuery->where('status', '!=', 'pending')
-                        ->orWhere(function ($draftQuery) {
-                            $draftQuery->where('status', 'pending')
-                                ->where('jumlah', '>', 0);
-                        });
+                    // Always show all tagihan (including drafts) unless a specific status is requested
+                    // Drafts will be styled differently in the view
                 })
                 ->when($jenis, function ($query, $selectedJenis) {
                     $query->whereHas('jenisPembayaran', function ($jenisQuery) use ($selectedJenis) {
