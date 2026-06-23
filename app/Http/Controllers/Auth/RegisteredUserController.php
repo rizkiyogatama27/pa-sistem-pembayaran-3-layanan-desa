@@ -29,20 +29,22 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'nik' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
-            'kk' => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
+            'nik'      => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
+            'kk'       => ['required', 'digits:16', 'regex:/^[0-9]{16}$/'],
+            'no_hp'    => ['required', 'string', 'max:20'],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'nik' => $request->nik,
-            'kk' => $request->kk,
-            'role' => 'user',
+            'name'                => $request->name,
+            'email'               => $request->email,
+            'password'            => Hash::make($request->password),
+            'nik'                 => $request->nik,
+            'kk'                  => $request->kk,
+            'no_hp'               => $request->no_hp,
+            'role'                => 'user',
             'verification_status' => 'pending',
         ]);
 
