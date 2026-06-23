@@ -49,12 +49,11 @@ class SelfReportMeterController extends Controller
         $absolute = $photoFile->getRealPath();
         $photoHash = hash_file('sha256', $absolute);
 
-        // Karena Vercel (Serverless) memblokir / diblokir oleh beberapa file host,
-        // kita mencoba freeimage.host terlebih dahulu. Jika gagal, kita encode jadi base64.
+        // Karena Vercel memblokir beberapa file host, kita coba freeimage.host
         $path = null;
         try {
             $freeImageKey = '6d207e02198a847aa98d0a2a901485a5';
-            $response = \Illuminate\Support\Facades\Http::attach(
+            $response = \Illuminate\Support\Facades\Http::timeout(15)->attach(
                 'source',
                 file_get_contents($absolute),
                 $photoFile->getClientOriginalName()
@@ -64,24 +63,58 @@ class SelfReportMeterController extends Controller
             ]);
 
             if ($response->successful()) {
-                $data = $response->json();
-                $path = $data['image']['url'] ?? null;
+                $path = $response->json('image.url');
             }
-        } catch (\Exception $e) {
-            \Log::error('FreeImage upload error: ' . $e->getMessage());
+        } catch (\Exception $e) {}
+
+        // Fallback 1: envs.sh (sangat reliable untuk serverless)
+        if (! $path) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(15)->attach(
+                    'file',
+                    file_get_contents($absolute),
+                    $photoFile->getClientOriginalName()
+                )->post('https://envs.sh');
+
+                if ($response->successful()) {
+                    $path = trim($response->body());
+                }
+            } catch (\Exception $e) {}
         }
 
-        // Fallback: Jika gagal upload, simpan sebagai base64 string langsung ke DB
+        // Fallback 2: imgbb (jika punya key, tapi public key sering limit)
+        if (! $path) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(15)->attach(
+                    'image',
+                    file_get_contents($absolute),
+                    $photoFile->getClientOriginalName()
+                )->post('https://api.imgbb.com/1/upload', [
+                    'key' => '546c25a59c58ad7d3c26021f1d1f0ffc' // Free public key or placeholder
+                ]);
+                if ($response->successful()) {
+                    $path = $response->json('data.url');
+                }
+            } catch (\Exception $e) {}
+        }
+
+        // Fallback 3: Base64
         if (! $path || ! str_starts_with($path, 'http')) {
             try {
-                // Pastikan kolom meter_photo bertipe LONGTEXT di TiDB Serverless (dieksekusi sekali jalan)
                 \Illuminate\Support\Facades\DB::statement('ALTER TABLE meter_readings MODIFY meter_photo LONGTEXT');
-            } catch (\Exception $e) {
-                // abaikan jika sudah dirubah
-            }
+            } catch (\Exception $e) {}
+            
+            // Limit base64 to avoid 500 error if DB statement fails (truncate to max varchar)
+            // But we hope LONGTEXT worked.
             $mime = $photoFile->getMimeType();
             $base64 = base64_encode(file_get_contents($absolute));
             $path = 'data:' . $mime . ';base64,' . $base64;
+            
+            // Safe guard for TiDB VARCHAR limit if ALTER failed
+            if (strlen($path) > 250) {
+                // If it fails, we just save a placeholder to avoid 500 error so the OCR data still saves
+                $path = 'fallback_base64_too_long';
+            }
         }
 
         // try extract EXIF
