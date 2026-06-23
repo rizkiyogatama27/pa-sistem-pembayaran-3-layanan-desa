@@ -233,29 +233,29 @@
 		</div>
 	@endif
 
-	<form method="GET" action="{{ route('pembayaran.index') }}" class="filter-card" style="background: #141413; border: 1px solid #2c2c28;">
+	<form method="GET" action="{{ route('pembayaran.index') }}" class="filter-card" style="background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(15,23,42,0.03);">
 		<input type="hidden" name="kategori" value="{{ $selectedKategori ?? 'wajib' }}">
 		<div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
-			<div style="min-width:220px;flex:1 1 260px;">
-				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b8b8b0;margin-bottom:5px;">Bulan</label>
-				<select name="bulan" style="width:100%;height:48px;background:#1f1f1c;border:1px solid #4b4b46;color:#f5f5f2;border-radius:11px;padding:10px 12px;font-size:15px;outline:none;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
+			<div style="min-width:180px;flex:1 1 200px;">
+				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:5px;">Bulan</label>
+				<select name="bulan" style="width:100%;height:44px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:10px;padding:8px 12px;font-size:14px;outline:none;transition:all 0.2s;">
 					@foreach(range(1,12) as $b)
 						<option value="{{ $b }}" {{ request('bulan', now()->month) == $b ? 'selected' : '' }}>{{ DateTime::createFromFormat('!m', $b)->format('F') }}</option>
 					@endforeach
 				</select>
 			</div>
-			<div style="min-width:120px;flex:1 1 120px;">
-				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b8b8b0;margin-bottom:5px;">Tahun</label>
-				<select name="tahun" style="width:100%;height:48px;background:#1f1f1c;border:1px solid #4b4b46;color:#f5f5f2;border-radius:11px;padding:10px 12px;font-size:15px;outline:none;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
+			<div style="min-width:100px;flex:1 1 120px;">
+				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:5px;">Tahun</label>
+				<select name="tahun" style="width:100%;height:44px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:10px;padding:8px 12px;font-size:14px;outline:none;transition:all 0.2s;">
 					@for($y = date('Y')-3; $y <= date('Y'); $y++)
 						<option value="{{ $y }}" {{ request('tahun', now()->year) == $y ? 'selected' : '' }}>{{ $y }}</option>
 					@endfor
 				</select>
 			</div>
 
-			<div style="min-width:220px;flex:1 1 260px;">
-				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b8b8b0;margin-bottom:5px;">Jenis</label>
-				<select name="jenis_pembayaran_id" style="width:100%;height:48px;background:#1f1f1c;border:1px solid #4b4b46;color:#f5f5f2;border-radius:11px;padding:10px 12px;font-size:15px;outline:none;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
+			<div style="min-width:180px;flex:1 1 220px;">
+				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:5px;">Jenis</label>
+				<select name="jenis_pembayaran_id" style="width:100%;height:44px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:10px;padding:8px 12px;font-size:14px;outline:none;transition:all 0.2s;">
 					<option value="">Semua Jenis</option>
 					@foreach($jenisPembayarans as $jenis)
 						<option value="{{ $jenis->id }}" @selected((string) $selectedJenisPembayaranId === (string) $jenis->id)>
@@ -265,9 +265,9 @@
 				</select>
 			</div>
 
-			<div style="min-width:220px;flex:1 1 260px;">
-				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b8b8b0;margin-bottom:5px;">Status</label>
-				<select name="status" style="width:100%;height:48px;background:#1f1f1c;border:1px solid #4b4b46;color:#f5f5f2;border-radius:11px;padding:10px 12px;font-size:15px;outline:none;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
+			<div style="min-width:180px;flex:1 1 220px;">
+				<label style="display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:5px;">Status</label>
+				<select name="status" style="width:100%;height:44px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:10px;padding:8px 12px;font-size:14px;outline:none;transition:all 0.2s;">
 					<option value="">Semua Status</option>
 					<option value="belum_bayar" @selected($selectedStatus === 'belum_bayar')>Belum Bayar</option>
 					<option value="pending" @selected($selectedStatus === 'pending')>Pending</option>
@@ -275,16 +275,16 @@
 				</select>
 			</div>
 
-			<div style="display:flex;align-items:end;gap:8px;">
+			<div style="display:flex;align-items:end;gap:8px;margin-left:auto;">
 				<button
 					type="submit"
-					style="height:48px;padding:0 22px;border-radius:11px;background:#3d3d37;color:#ffffff;font-weight:700;border:1px solid #5a5a53;cursor:pointer;font-size:15px;box-shadow:0 4px 12px rgba(0,0,0,0.2);"
+					style="height:44px;padding:0 20px;border-radius:10px;background:#0f172a;color:#ffffff;font-weight:700;border:none;cursor:pointer;font-size:14px;box-shadow:0 4px 12px rgba(15,23,42,0.15);"
 				>
 					Cari
 				</button>
 				<a
 					href="{{ route('pembayaran.index', ['kategori' => $selectedKategori ?? 'wajib']) }}"
-					style="height:48px;padding:0 22px;border-radius:11px;border:1px solid #5a5a53;color:#ffffff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#2c2c28;font-size:15px;font-weight:600;box-shadow:0 2px 4px rgba(0,0,0,0.1);"
+					style="height:44px;padding:0 20px;border-radius:10px;border:1px solid #cbd5e1;color:#475569;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#ffffff;font-size:14px;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,0.02);"
 				>
 					Reset
 				</a>
