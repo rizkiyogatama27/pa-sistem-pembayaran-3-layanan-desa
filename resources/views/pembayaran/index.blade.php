@@ -298,15 +298,10 @@
 			<table id="payment-table" class="min-w-full divide-y divide-gray-200">
 				<thead class="table-head">
 					<tr>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">No</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Invoice</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nama Warga</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Jenis Pembayaran</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Detail Air</th>
+						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Warga & Invoice</th>
+						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Jenis & Detail</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Jatuh Tempo</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Tanggal</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Jumlah</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Metode</th>
+						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nominal</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Aksi</th>
 					</tr>
@@ -317,52 +312,46 @@
 							$isJenisAir = str_contains(strtolower((string) optional($p->jenisPembayaran)->nama), 'air');
 						@endphp
 						<tr>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $loop->iteration }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $p->invoice ?? 'Belum ada' }}</td>
-							<td class="px-4 py-3 text-sm text-gray-800">{{ $p->warga->nama ?? '-' }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $p->jenisPembayaran->nama ?? '-' }}</td>
+							<td class="px-4 py-3 text-sm">
+								<div class="font-semibold text-gray-800" style="font-size: 14px;">{{ $p->warga->nama ?? '-' }}</div>
+								<div class="text-xs text-gray-400 mt-1" style="font-family: monospace;">{{ $p->invoice ?? 'Belum ada' }}</div>
+							</td>
 							<td class="px-4 py-3 text-sm text-gray-700">
+								<div class="font-semibold text-gray-800">{{ $p->jenisPembayaran->nama ?? '-' }}</div>
 								@if($p->periode || $p->pemakaian_air !== null)
-									<div class="font-semibold text-gray-900">{{ $p->periode ?? '-' }}</div>
-									<div class="text-xs text-gray-500">
+									<div class="text-xs text-gray-500 mt-1">
+										{{ $p->periode ?? '-' }}
 										@if($p->pemakaian_air !== null)
-											Pemakaian {{ $p->pemakaian_air }} m3
+											| Pmk: {{ $p->pemakaian_air }}m³
 										@endif
 										@if($p->denda > 0)
-											| Denda Rp {{ number_format($p->denda,0,',','.') }}
+											| +Rp{{ number_format($p->denda,0,',','.') }}
 										@endif
 									</div>
-								@else
-									<span class="text-gray-400">-</span>
 								@endif
 							</td>
 							<td class="px-4 py-3 text-sm text-gray-700">
 								@if($p->jatuh_tempo)
 									<div>{{ \Illuminate\Support\Carbon::parse($p->jatuh_tempo)->translatedFormat('d M Y') }}</div>
 									@if($p->status !== 'paid' && \Illuminate\Support\Carbon::parse($p->jatuh_tempo)->isPast())
-										<div class="text-xs font-semibold text-rose-600">Terlambat</div>
+										<div class="text-xs font-semibold text-rose-600 mt-1">Terlambat</div>
 									@endif
 								@else
 									<span class="text-gray-400">-</span>
 								@endif
 							</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $p->tanggal_bayar ? \Illuminate\Support\Carbon::parse($p->tanggal_bayar)->translatedFormat('d M Y') : '-' }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">
-								<div>Rp {{ number_format($p->jumlah,0,',','.') }}</div>
+								<div class="font-semibold text-gray-800">Rp {{ number_format($p->jumlah,0,',','.') }}</div>
 								@if($isJenisAir && $p->meter_awal !== null && $p->meter_akhir !== null)
-									<div class="text-xs text-gray-500">{{ $p->meter_awal ?? 0 }} - {{ $p->meter_akhir ?? 0 }} x Rp {{ number_format($p->tarif_per_meter,0,',','.') }}</div>
-								@endif
-							</td>
-							<td class="px-4 py-3 text-sm text-gray-700">
-								@if($p->status === 'paid')
-									<span class="status-badge status-paid">Lunas</span>
-								@else
-									<span class="status-badge" style="background:#e5e7eb;color:#6b7280;">-</span>
+									<div class="text-xs text-gray-400 mt-1">{{ $p->meter_awal ?? 0 }} - {{ $p->meter_akhir ?? 0 }} x Rp {{ number_format($p->tarif_per_meter,0,',','.') }}</div>
 								@endif
 							</td>
 							<td class="px-4 py-3 text-sm col-status" style="vertical-align: middle;">
 								@if($p->status == 'paid')
 									<span class="status-badge status-paid">Lunas</span>
+									@if($p->tanggal_bayar)
+										<div class="text-xs text-gray-400 mt-1">{{ \Illuminate\Support\Carbon::parse($p->tanggal_bayar)->translatedFormat('d/m/y') }}</div>
+									@endif
 								@elseif((int) $p->jumlah <= 0)
 									<span class="status-badge" style="background:#e0e7ef;color:#64748b;">Draft</span>
 								@else
