@@ -181,7 +181,6 @@
 				Lihat Tunggakan Air
 			</a>
 			@if(($selectedKategori ?? 'wajib') !== 'donasi')
-				<!-- Tombol WA Massal dinonaktifkan karena Wablas memblokir IP Vercel. Gunakan tombol WA manual di tiap baris.
 				<form action="{{ route('pembayaran.reminder-whatsapp.bulk') }}" method="POST" onsubmit="return confirm('Kirim reminder WhatsApp ke semua warga yang sudah jatuh tempo?');" style="display:inline;">
 					@csrf
 					<input type="hidden" name="kategori" value="{{ $selectedKategori ?? 'wajib' }}">
@@ -197,7 +196,6 @@
 						Kirim Ulang WA
 					</button>
 				</form>
-				-->
 			@endif
 		</div>
 	</div>
