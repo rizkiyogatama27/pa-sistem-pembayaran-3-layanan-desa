@@ -359,6 +359,7 @@
 									<a href="{{ route('pembayaran.invoice', $p->id) }}" class="action-link">Invoice</a>
 									<a href="{{ route('pembayaran.edit', $p->id) }}" class="action-link">Edit</a>
 									@if($p->status !== 'paid')
+										<a href="{{ route('pembayaran.cash.form', $p->id) }}" class="action-link" style="background:#0ea5e9;color:#fff;border-color:#0ea5e9;">Bayar Tunai</a>
 										@php
 											$noHp = $p->warga->no_hp ?? '';
 											// Normalisasi nomor HP ke format internasional (62)
