@@ -148,7 +148,7 @@
                     @csrf
                     <div class="field">
                         <label class="label" for="email">Alamat Email</label>
-                        <input id="email" class="input" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="admin@gmail.com">
+                        <input id="email" class="input" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="contoh: warga@desa.id">
                         @error('email') <div class="field-error">{{ $message }}</div> @enderror
                         @if ($errors->has('email') && (str_contains($errors->first('email'), 'belum memiliki password') || str_contains($errors->first('email'), 'set password')))
                             <div style="margin-top:8px;">
