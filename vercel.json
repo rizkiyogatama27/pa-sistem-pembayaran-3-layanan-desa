@@ -48,6 +48,13 @@
         "SESSION_DRIVER": "cookie",
         "QUEUE_CONNECTION": "sync",
         "VIEW_COMPILED_PATH": "/tmp",
-        "OCR_SPACE_API_KEY": "K83094079088957"
-    }
+        "OCR_SPACE_API_KEY": "K83094079088957",
+        "CRON_SECRET": "VercelCronSecret123"
+    },
+    "crons": [
+        {
+            "path": "/api/cron/trigger",
+            "schedule": "0 8 * * *"
+        }
+    ]
 }

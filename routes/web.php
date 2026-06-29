@@ -182,4 +182,37 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 require __DIR__.'/auth.php';
 
+// Route untuk Vercel Cron Job (Diakses otomatis oleh Vercel setiap hari)
+Route::get('/api/cron/trigger', function () {
+    // Verifikasi Token Rahasia dari Vercel untuk keamanan (agar tidak ditembak orang sembarangan)
+    $authHeader = request()->header('Authorization');
+    $expectedToken = 'Bearer ' . env('CRON_SECRET', 'VercelCronSecret123');
 
+    if ($authHeader !== $expectedToken) {
+        return response()->json(['error' => 'Unauthorized. Invalid Cron Secret.'], 401);
+    }
+
+    $logs = [];
+
+    // 1. Generate tagihan air bulanan
+    \Illuminate\Support\Facades\Artisan::call('tagihan:generate-air');
+    $logs['generate_air'] = trim(\Illuminate\Support\Facades\Artisan::output());
+
+    // 2. Generate tagihan wajib bulanan lainnya (seperti Sampah dll)
+    \Illuminate\Support\Facades\Artisan::call('tagihan:generate-bulanan');
+    $logs['generate_bulanan'] = trim(\Illuminate\Support\Facades\Artisan::output());
+
+    // 3. Kirim pengingat WhatsApp otomatis (H-5 Jatuh Tempo)
+    \Illuminate\Support\Facades\Artisan::call('tagihan:send-whatsapp-reminder', ['--days' => 5]);
+    $logs['wa_reminder_h5'] = trim(\Illuminate\Support\Facades\Artisan::output());
+
+    // 4. Kirim pengingat WhatsApp otomatis (Hari H Jatuh Tempo)
+    \Illuminate\Support\Facades\Artisan::call('tagihan:send-whatsapp-reminder', ['--days' => 0]);
+    $logs['wa_reminder_h0'] = trim(\Illuminate\Support\Facades\Artisan::output());
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Cron job dieksekusi dengan sukses.',
+        'logs' => $logs
+    ]);
+});
