@@ -38,7 +38,7 @@
         .left-content { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; width: 100%; }
         .brand-logo { height: 64px; width: auto; object-fit: contain; margin-bottom: 24px; background: #ffffff; padding: 10px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .brand-title { font-size: 34px; font-weight: 900; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.02em; }
-        .brand-subtitle { color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 40px; }
+        .brand-subtitle { color: rgba(255,255,255,0.95); font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 40px; }
         .feature-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
         .feature-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.08); display: grid; place-items: center; font-size: 18px; border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; flex: 0 0 auto; }
         .feature-item h3 { margin: 0 0 4px; font-size: 15px; font-weight: 700; color: #ffffff; }
