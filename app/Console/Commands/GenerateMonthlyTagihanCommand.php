@@ -17,7 +17,7 @@ class GenerateMonthlyTagihanCommand extends Command
     {
         $periode = (string) ($this->option('periode') ?: now()->format('Y-m'));
 
-        $wargas = Warga::query()->orderBy('nama')->get();
+        $wargas = Warga::query()->where('status', 'aktif')->orderBy('nama')->get();
 
         if ($wargas->isEmpty()) {
             $this->warn('Tidak ada data warga.');

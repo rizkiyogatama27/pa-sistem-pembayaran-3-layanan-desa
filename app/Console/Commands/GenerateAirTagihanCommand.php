@@ -30,7 +30,7 @@ class GenerateAirTagihanCommand extends Command
             return self::FAILURE;
         }
 
-        $wargas = Warga::query()->orderBy('nama')->get();
+        $wargas = Warga::query()->where('status', 'aktif')->orderBy('nama')->get();
         $generated = 0;
 
         foreach ($wargas as $warga) {

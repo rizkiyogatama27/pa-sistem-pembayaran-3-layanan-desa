@@ -63,8 +63,8 @@
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Keluarga</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nama</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">NIK</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Alamat</th>
-						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">No HP</th>
+						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Alamat & HP</th>
+						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
 						<th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Aksi</th>
 					</tr>
 				</thead>
@@ -76,17 +76,23 @@
 							<td class="px-4 py-3 text-sm text-gray-700">{{ $w->keluarga?->nama_keluarga ?? '-' }}</td>
 							<td class="px-4 py-3 text-sm text-gray-800 font-medium">{{ $w->nama }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">{{ $w->nik }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $w->alamat }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ $w->no_hp ?? '-' }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">
+								<div>{{ $w->alamat }}</div>
+								@if($w->no_hp)
+									<div class="text-xs text-gray-500 mt-1">{{ $w->no_hp }}</div>
+								@endif
+							</td>
+							<td class="px-4 py-3 text-sm text-gray-700">
+								@if($w->status === 'aktif')
+									<span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:700;">Aktif</span>
+								@elseif($w->status === 'nonaktif')
+									<span style="background:#fee2e2;color:#991b1b;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:700;">Non-Aktif</span>
+								@else
+									<span style="background:#f1f5f9;color:#475569;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:700;text-transform:capitalize;">{{ $w->status }}</span>
+								@endif
+							</td>
 							<td class="px-4 py-3 text-sm">
-								<div class="flex flex-wrap gap-2">
-									<a href="{{ route('warga.edit',$w->id) }}" class="btn-muted">Edit</a>
-									<form action="{{ route('warga.destroy',$w->id) }}" method="POST" onsubmit="return confirm('Hapus data warga ini?')" style="display:inline;">
-										@csrf
-										@method('DELETE')
-										<button type="submit" class="btn-danger">Hapus</button>
-									</form>
-								</div>
+								<a href="{{ route('warga.edit',$w->id) }}" class="btn-muted">Edit & Status</a>
 							</td>
 						</tr>
 					@empty

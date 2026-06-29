@@ -144,6 +144,7 @@ class WargaController extends Controller
             'nama' => ['required', 'string', 'max:255'],
             'alamat' => ['required', 'string'],
             'no_hp' => ['nullable', 'string', 'max:20'],
+            'status' => ['required', 'string', 'in:aktif,nonaktif,pindah,meninggal'],
             'keluarga_id' => ['nullable', 'exists:keluargas,id'],
             'no_kk_keluarga' => ['nullable', 'string', 'max:32', Rule::unique('keluargas', 'no_kk')->ignore($warga->keluarga_id)],
             'nama_keluarga' => ['nullable', 'string', 'max:255'],
@@ -162,6 +163,7 @@ class WargaController extends Controller
             'nama' => $validated['nama'],
             'alamat' => $validated['alamat'],
             'no_hp' => $validated['no_hp'] ?? null,
+            'status' => $validated['status'],
             'keluarga_id' => $keluargaId,
         ]);
 
@@ -170,15 +172,15 @@ class WargaController extends Controller
     }
 
     // =====================
-    // DELETE
+    // DELETE (SOFT DELETE VIA STATUS)
     // =====================
     public function destroy($id)
     {
         $warga = Warga::findOrFail($id);
-        $warga->delete();
+        $warga->update(['status' => 'nonaktif']);
 
         return redirect()->route('warga.index')
-                         ->with('success', 'Data warga berhasil dihapus');
+                         ->with('success', 'Data warga berhasil dinonaktifkan (Tidak dihapus permanen untuk menjaga riwayat tagihan).');
     }
 
     private function resolveKeluargaId(array $validated): ?int

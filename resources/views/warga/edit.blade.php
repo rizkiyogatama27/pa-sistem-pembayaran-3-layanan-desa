@@ -125,6 +125,17 @@
 				>
 			</div>
 
+			<div>
+				<label class="field-label">Status Warga</label>
+				<select name="status" class="field-input">
+					<option value="aktif" @selected(old('status', $warga->status) === 'aktif')>Aktif</option>
+					<option value="nonaktif" @selected(old('status', $warga->status) === 'nonaktif')>Non-Aktif (Riwayat tetap disimpan)</option>
+					<option value="pindah" @selected(old('status', $warga->status) === 'pindah')>Pindah Domisili</option>
+					<option value="meninggal" @selected(old('status', $warga->status) === 'meninggal')>Meninggal</option>
+				</select>
+				<p class="text-xs text-gray-500 mt-1">Warga yang tidak aktif tidak akan dibuatkan tagihan baru otomatis.</p>
+			</div>
+
 			<div class="pt-4 border-t border-gray-200">
 				<div class="text-sm text-gray-600 mb-3">Perbarui data warga yang diperlukan.</div>
 				<div class="flex items-center gap-3 flex-wrap">
@@ -134,13 +145,6 @@
 					>
 						Simpan
 					</button>
-					<button
-						type="button"
-						onclick="if(confirm('Yakin ingin menghapus data warga ini?')) document.getElementById('delete-warga-form').submit();"
-						class="btn-danger"
-					>
-						Hapus
-					</button>
 					<a
 						href="{{ route('warga.index') }}"
 						class="btn-secondary"
@@ -149,11 +153,6 @@
 					</a>
 				</div>
 			</div>
-		</form>
-
-		<form id="delete-warga-form" action="{{ route('warga.destroy', $warga->id) }}" method="POST" style="display:none;">
-			@csrf
-			@method('DELETE')
 		</form>
 	</div>
 </div>

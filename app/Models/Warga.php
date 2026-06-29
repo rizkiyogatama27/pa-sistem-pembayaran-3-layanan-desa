@@ -19,6 +19,7 @@ class Warga extends Model
         'nik',
         'alamat',
         'no_hp',
+        'status',
     ];
 
     public function pembayarans(): HasMany
