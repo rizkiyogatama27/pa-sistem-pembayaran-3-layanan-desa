@@ -331,7 +331,7 @@
                                 <img src="/logo-simp-mld.png" alt="SIMP-MLD Logo" style="height:36px;width:auto;object-fit:contain;">
                                 <div style="display:flex;flex-direction:column;line-height:1.2;">
                                         <span>Portal Desa</span>
-                                        <span style="font-size:11px;color:#64748b;font-weight:600;">SIMP-MLD</span>
+                                        <span style="font-size:11px;color:#64748b;font-weight:600;">Sistem Informasi Manajemen Pembayaran Desa</span>
                                 </div>
                         </div>
                         <nav class="menu">
@@ -430,7 +430,7 @@
                                                 <img src="/logo-simp-mld.png" alt="SIMP-MLD Logo" style="height:44px;width:auto;object-fit:contain;background:#fff;padding:4px;border-radius:8px;">
                                                 <div style="display:flex;flex-direction:column;line-height:1.2;">
                                                         <h3 style="margin:0;font-size:20px;color:#fff;">Portal Desa</h3>
-                                                        <span style="font-size:12px;color:#94a3b8;font-weight:600;">SIMP-MLD</span>
+                                                        <span style="font-size:12px;color:#94a3b8;font-weight:600;">Sistem Informasi Manajemen Pembayaran</span>
                                                 </div>
                                         </div>
                                         <p style="margin:0;line-height:1.6;max-width:300px;">Solusi pembayaran terpadu untuk desa. Memudahkan warga dalam membayar tagihan dan berdonasi secara aman dan transparan.</p>
@@ -452,7 +452,7 @@
                                 </div>
                         </div>
                         <div class="copyright">
-                                <div>© {{ date('Y') }} Portal Desa (SIMP-MLD). Hak Cipta Dilindungi.</div>
+                                <div>© {{ date('Y') }} Portal Desa (Sistem Informasi Manajemen Pembayaran - Multi Layanan Desa). Hak Cipta Dilindungi.</div>
                                 <div>Versi sistem 1.0</div>
                         </div>
                 </footer>

@@ -98,7 +98,7 @@
             <div class="left-content">
                 <img src="/logo-simp-mld.png" alt="Portal Desa Logo" class="brand-logo">
                 <h1 class="brand-title">Portal Desa</h1>
-                <div class="brand-subtitle">SIMP-MLD &bull; AIR &bull; SAMPAH &bull; DONASI</div>
+                <div class="brand-subtitle">Sistem Informasi Manajemen Pembayaran - Multi Layanan Desa<br><br>AIR &bull; SAMPAH &bull; DONASI</div>
 
                 <div class="feature-item">
                     <div class="feature-icon"><i class="fa-solid fa-droplet"></i></div>
@@ -129,7 +129,7 @@
                     </div>
                 </div>
             </div>
-            <div class="left-footer">&copy; {{ date('Y') }} Portal Desa (SIMP-MLD). Hak Cipta Dilindungi.</div>
+            <div class="left-footer">&copy; {{ date('Y') }} Portal Desa (Sistem Informasi Manajemen Pembayaran - Multi Layanan Desa). Hak Cipta Dilindungi.</div>
         </section>
 
         <section class="right">
