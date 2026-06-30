@@ -14,6 +14,7 @@ class WargaController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->query('q', ''));
+        $statusFilter = trim((string) $request->query('status', ''));
 
         $wargas = Warga::query()
             ->with('keluarga')
@@ -25,6 +26,9 @@ class WargaController extends Controller
                         $innerQuery->where('no_kk', 'like', "%{$search}%")
                             ->orWhere('nama_keluarga', 'like', "%{$search}%");
                     });
+            })
+            ->when($statusFilter !== '', function ($query) use ($statusFilter) {
+                $query->where('status', $statusFilter);
             })
             ->orderBy('nama')
             ->paginate(10)

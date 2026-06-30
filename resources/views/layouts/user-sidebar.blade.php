@@ -35,6 +35,7 @@
         $isOcr = request()->routeIs('meter.self-report.create');
         $isEvent = request()->routeIs('user.event-donasi.index');
         $isRiwayatDonasi = request()->routeIs('user.event-donasi.history');
+        $isProfil = request()->routeIs('user.profile.edit');
     @endphp
 
     <div class="sidebar-section">Menu Utama</div>
@@ -72,6 +73,12 @@
         <a href="{{ route('user.event-donasi.history') }}" class="sidebar-link{{ $isRiwayatDonasi ? ' active' : '' }}">
             <svg class="sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6"/><path d="M7 17v-2a2 2 0 012-2h6a2 2 0 012 2v2"/></svg>
             Riwayat Donasi
+        </a>
+
+        <div class="sidebar-section">Akun Saya</div>
+        <a href="{{ route('user.profile.edit') }}" class="sidebar-link{{ $isProfil ? ' active' : '' }}">
+            <svg class="sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            Profil & No. HP
         </a>
     </nav>
 

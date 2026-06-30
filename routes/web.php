@@ -130,6 +130,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/meter/self-report', [SelfReportMeterController::class, 'create'])->name('meter.self-report.create');
     Route::post('/meter/self-report', [SelfReportMeterController::class, 'store'])->name('meter.self-report.store');
     Route::post('/meter/self-report/ocr', [SelfReportMeterController::class, 'ocr'])->name('meter.self-report.ocr');
+    // Profil warga (update HP & alamat sendiri)
+    Route::get('/user/profile', [\App\Http\Controllers\UserProfileController::class, 'edit'])->name('user.profile.edit');
+    Route::patch('/user/profile', [\App\Http\Controllers\UserProfileController::class, 'update'])->name('user.profile.update');
 });
 
 // Public-facing event contribution route (used on the welcome page)

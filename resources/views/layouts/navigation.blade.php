@@ -34,6 +34,47 @@
                 </div>
             </div>
 
+            <!-- Notification Bell (Admin Only) -->
+            @if(Auth::user()?->role === 'admin')
+            @php
+                $notifPendingVerifikasi = \App\Models\User::where('verification_status', 'pending')->where('role', 'user')->count();
+                $notifPembayaranBaru = \App\Models\Pembayaran::where('status', 'pending')->where('jumlah', '>', 0)->whereDate('tanggal_bayar', today())->count();
+                $totalNotif = $notifPendingVerifikasi + $notifPembayaranBaru;
+            @endphp
+            <div style="position:relative;margin-right:8px;" x-data="{ open: false }">
+                <button @click="open = !open" style="position:relative;width:38px;height:38px;border-radius:50%;background:rgba(29,78,216,0.08);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseover="this.style.background='rgba(29,78,216,0.15)'" onmouseout="this.style.background='rgba(29,78,216,0.08)'">
+                    <svg fill="none" stroke="#1d4ed8" stroke-width="2" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                    @if($totalNotif > 0)
+                        <span style="position:absolute;top:4px;right:4px;width:16px;height:16px;background:#ef4444;border-radius:50%;font-size:9px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">{{ $totalNotif > 9 ? '9+' : $totalNotif }}</span>
+                    @endif
+                </button>
+                <div x-show="open" @click.outside="open = false" x-transition style="position:absolute;right:0;top:48px;width:300px;background:#fff;border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,0.12);border:1px solid #e2e8f0;z-index:100;overflow:hidden;">
+                    <div style="padding:14px 16px;border-bottom:1px solid #f1f5f9;font-weight:800;font-size:13px;color:#0f172a;">🔔 Notifikasi Admin</div>
+                    @if($notifPendingVerifikasi > 0)
+                        <a href="{{ route('admin.verifikasi-user.index') }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;border-bottom:1px solid #f8fafc;transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <span style="width:36px;height:36px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;">👤</span>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:#0f172a;">{{ $notifPendingVerifikasi }} User Menunggu Verifikasi</div>
+                                <div style="font-size:11px;color:#64748b;margin-top:2px;">Klik untuk melihat dan memverifikasi</div>
+                            </div>
+                        </a>
+                    @endif
+                    @if($notifPembayaranBaru > 0)
+                        <a href="{{ route('pembayaran.wajib') }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;border-bottom:1px solid #f8fafc;transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <span style="width:36px;height:36px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;">💰</span>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:#0f172a;">{{ $notifPembayaranBaru }} Tagihan Pending Hari Ini</div>
+                                <div style="font-size:11px;color:#64748b;margin-top:2px;">Tagihan belum dibayar hari ini</div>
+                            </div>
+                        </a>
+                    @endif
+                    @if($totalNotif === 0)
+                        <div style="padding:20px 16px;text-align:center;color:#94a3b8;font-size:13px;">✅ Tidak ada notifikasi baru</div>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

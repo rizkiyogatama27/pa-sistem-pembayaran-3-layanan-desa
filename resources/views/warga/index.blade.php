@@ -41,15 +41,22 @@
 
 	<div class="panel-card">
 		<div class="panel-head">
-			<form action="{{ route('warga.index') }}" method="GET" style="display:flex;gap:8px;max-width:600px;">
+			<form action="{{ route('warga.index') }}" method="GET" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
 				<input
 					type="text"
 					name="q"
 					value="{{ $search ?? '' }}"
 					placeholder="Cari nama, NIK, atau alamat"
-					style="flex:1;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;"
+					style="flex:1;min-width:200px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;"
 				>
-				<button type="submit" class="btn-primary">Cari</button>
+				<select name="status" style="padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff;color:#334155;">
+					<option value="">Semua Status</option>
+					<option value="aktif" {{ (request('status') === 'aktif') ? 'selected' : '' }}>✅ Aktif</option>
+					<option value="nonaktif" {{ (request('status') === 'nonaktif') ? 'selected' : '' }}>❌ Non-Aktif</option>
+					<option value="pindah" {{ (request('status') === 'pindah') ? 'selected' : '' }}>🚚 Pindah Domisili</option>
+					<option value="meninggal" {{ (request('status') === 'meninggal') ? 'selected' : '' }}>🕊️ Meninggal</option>
+				</select>
+				<button type="submit" class="btn-primary">🔍 Cari</button>
 				<a href="{{ route('warga.index') }}" class="btn-secondary">Reset</a>
 			</form>
 		</div>
